@@ -1,7 +1,14 @@
 #csv file splitter
 import sys
 import csv
+'''
+file_splitter.py takes a csv file as input and divides it into smaller files of whatever length is needed. I prompt the user for input
+to make this easier to use for non coders. It should be run in Command Prompt or other command line interfaces as below:
 
+>file_splitter.py [input file].csv
+
+It will save the required number of files into the same directory where the script is run. 
+'''
 filmDB = sys.argv[1]
 filmList = []
 fNamePrefix = '_files'
