@@ -36,7 +36,7 @@ def get_oclc(l):
 	for i in l:
 		number = i[2] # this number should change if your input file has more than three columns or 
 					  #if the 035 field isn't in the third column
-		split = number.split(';')
+		split = number.split(';') #substitute the semi-colon for whatever the in-field delimiter is
 		for a in split:
 			if '(OCoLC)'in a:
 				number = a
