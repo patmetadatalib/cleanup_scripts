@@ -6,4 +6,4 @@ The file_splitter.py script takes a csv file and splits it into smaller files of
 
 The get_oclc.py script takes a csv file that has a bunch of different values from the MARC21 035 field and returns a list of only the OCLC numbers in the list. 
 
-All scripts were generated using Python 3.6.2 and tested/used on Windows Command Prompt
+All scripts were generated using Python 3.6.2 and tested/used on Windows.
