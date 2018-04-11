@@ -41,46 +41,48 @@ def get_lc_char(cn):
      cn = cn.strip()
      cn_list = list(cn)
      pref = []
-     for i in cn_list:
+     for i in cn_list: # iterate through call number 
              if i.isalpha():
 
-                     pref.append(i)
-             else:
-                     code = ''.join(pref)
+                     pref.append(i) # add character to list for export 
+             else: # at first instance of a non-alphabetic character, list of characters is converted to string and returned 
+                     code = ''.join(pref) 
                      return code
-# takes an LC call number and returns the digits from the LC class number 
+# takes an LC call number and returns the digits from the LC class number NOTE: this won't work if the call number does 
+#not have a cutter 
 def get_lc_num(cn):
      cn = cn.strip()
-     code = get_lc_char(cn)
+     code = get_lc_char(cn) # use above function to get and remove the alphabetical code 
      cn = cn.replace(code, '')
      cn_list = list(cn)
      nums = []
-     for i in cn_list:
-             try:
+     for i in cn_list: 
+             try: # iterate through call number until you reach a non-integer character (e.g a space or a period)
                      int_t = int(i)
                      nums.append(i)
-             except ValueError:
+             except ValueError: # when exception is raised on non-integer character, return the numbers from the call number 
                      num_code = ''.join(nums)
                      return num_code
 					 
-# takes a call number and returns a sortable version (used in a tuple for sorting) 				 
+# takes a call number and returns a sortable version (used in a tuple for sorting) NOTE: this won't work if the call number does 
+#not have a cutter 
 def get_simple_sort(cn):
 	lc_char = get_lc_char(cn)
 	nums = cn.replace(lc_char, '')
-	lc_nums = get_lc_num(cn)
+	lc_nums = get_lc_num(cn) # retrieve numbers to iterate through 
 	exp = []
-	for c in nums:
-		if c.isalpha():
+	for c in nums: # iterate through characters in call number 
+		if c.isalpha(): # if call number is an alphabetical letter, replace it with its ordinal 
 			o = str(ord(c))
 			exp.append(o)
-		elif c == ' ':
+		elif c == ' ': # for spaces and periods, replace them with zeros 
 			exp.append('0')
 		elif c == '.':
 			exp.append('0')
 		elif c.isdigit():
 			exp.append(c)
 	s = ''.join(exp)
-	if len(lc_nums) < 4:
+	if len(lc_nums) < 4: # adding sorting zeros so that RA393 is sorted before RA1234
 		s = '00' + s 
 		return s
 	if len(lc_nums) == 1:
@@ -90,10 +92,12 @@ def get_simple_sort(cn):
 		s = '000' + s 
 		return s
 	else:	
-		return s 
-# wrapper function for sorting the csv of records 
+		return s # if it is over 4 digits, we add no sorting zeros 
+	
+	
+# wrapper function for sorting the csv of records, not much to see here  
 def sort_file(s):
-	rec = read_csv(s)
+	rec = read_csv(s) 
 	out_dict, sort_list, class_list = simple_sort_list(rec)
 	sorted_list = sort_cn_list(sort_list)
 	sorted_recs, errs = get_sorted_recs(out_dict, sorted_list, class_list)
@@ -108,12 +112,27 @@ def sort_file(s):
 def sort_cn_list(cn_list):
 	return sorted(cn_list, key=lambda x: x[1])
 	
-# takes the dictionary of actual records, the sorted list, and the list of call number codes and returns a list of sorted records for writing to a file along with a list of any errors 	
+'''
+These last two functions are where the sorting really happens and I'm pretty proud of them, so I'm gonna explain what's happening. 
+
+simple_sort_list takes a list of records and grabs the call number. It adds the alphabetical code to a list if it's not already there. 
+Then it gets a sortable version of the call number (see above). The record itself is added to a dictionary with 
+the key being the regular call number. Then a tuple is created that contains the call number paired with the sortable version. These three are then exported to the
+get_sorted_recs function. 
+
+The get_sorted_recs function sorts the list of LC classifications in alphabetical order and then starts iterating through that list. From
+there we start going through the list of the tuples containing the actual call number and the sortable call number. We get the LC code
+using the get_lc_char function. If the code for a particular record matches the current code being iterated through on the list, we retrieve
+the record from the dictionary and add it to a the final list for export. 
+
+Why do I think this is cool? Because the records can be added in any order to the dictionary but using only native sorting methods in Python
+we can retrieve them in the call number order without having to deal with the semantics of call numbers at all! 
+'''
 def get_sorted_recs(out_dict, sort_list, class_list):
 	sorted_class = sorted(class_list)
 	final_sort = []
 	key_errors = []
-	for code in class_list:
+	for code in sorted_class:
 		for c in sort_list:
 			try:
 				cn = c[0]
@@ -139,7 +158,7 @@ def simple_sort_list(rec):
 		# HERE IS WHERE YOU SET THE COLUMN INDEX FOR THE CALL NUMBER. 
 		# If the call number is in the first column, set this to 0. Set it 
 		# to 1 for the second column, 2 for the third, etc. 
-		lc_char = get_lc_char(cn)
+		lc_char = get_lc_char(cn) 
 		if lc_char not in class_list:
 			class_list.append(lc_char) 
 		sort = get_simple_sort(cn)
