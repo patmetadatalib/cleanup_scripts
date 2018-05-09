@@ -17,7 +17,8 @@ command in Command Prompt or other command line interface
 >get_oclc.py [input_file].csv
 
 
-It will save a csv file called "oclc_numbers.csv" in the same directory.
+It will save a csv file called "oclc_numbers.csv" in the same directory. The file will contain a # before each number so that it can be
+used immediately within the OCLC Connexion batch holdings client. 
  
 
 '''
