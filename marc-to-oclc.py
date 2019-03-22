@@ -40,6 +40,14 @@ def presence_test(rec, field, subfield):
 			return ''
 	except TypeError:
 		return ''		
+		
+def get_file(f):
+	a = []
+	with open(f, 'r', encoding='utf-8') as f:
+		r = csv.reader(f)
+		for row in r:
+			a.append(row)
+	return a
 	
 def get_oclc(f):
 	oclc_list = []
@@ -49,7 +57,6 @@ def get_oclc(f):
 	with open(f, 'rb') as rf:
 		reader = MARCReader(rf, to_unicode=True)
 		for rec in reader:
-			id = format_pymarc(rec.get_fields('001')).lower()
 			oclc = rec.get_fields('035')
 			oclc_text = []
 			for i in oclc:
@@ -59,20 +66,16 @@ def get_oclc(f):
 					number = a
 					if number not in oclc_list:
 						oclc_list.append(number)
-						count_per_record += 1
-							
 				if 'ocm' in a:
 					number = a
 					oclc_list.append(number)
 					if number not in oclc_list:
 						oclc_list.append(number)
-						count_per_record += 1
 				if 'ocn' in a:
 					number = a
 					oclc_list.append(number)
 					if number not in oclc_list:
 						oclc_list.append(number)
-						count_per_record += 1
 	return oclc_list, multi_count, multi_mms, multi_record
 	
 def clean_list(oclc_list):
