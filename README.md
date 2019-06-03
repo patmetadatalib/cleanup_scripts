@@ -4,7 +4,9 @@ This repository has general cleanup and management scripts that were developed t
 
 The file_splitter.py script takes a csv file and splits it into smaller files of a size specified by the user.
 
-The get_oclc.py script takes a csv file that has a bunch of different values from the MARC21 035 field and returns a list of only the OCLC numbers in the list. 
+The get_oclc.py script takes a csv file that has a bunch of different values from the MARC21 035 field and returns a list of only the OCLC numbers in the list.
+
+get_oclc-no-csv.py takes a MARC binary file and returns a list of OCLC numbers formatted for batch processing using OCLC Connexion. 
 
 The marc-to-oclc.py script takes a binary MARC file and returns the OCLC numbers formatted for use in the OCLC Connexion client
 
